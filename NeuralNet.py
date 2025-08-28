@@ -241,6 +241,7 @@ class NeuralNet:
 # ------------------------------------------------------------
 if __name__ == "__main__":
     from tensorflow.keras.datasets import mnist
+    import matplotlib.pyplot as plt
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
     X_train = X_train.reshape(-1, 28*28)
@@ -254,5 +255,22 @@ if __name__ == "__main__":
 
     activations, _ = net.forward(X_test)
     y_pred = np.argmax(activations[-1], axis = 1)
+    confidence = np.max(activations[-1], axis=1)  # Highest softmax probability for each prediction
     accuracy = np.mean(y_pred == y_test)
     print(f"Test Accuracy: {accuracy:.4f}")
+
+    # Show the 10 samples with lowest confidence
+    lowest_conf_indices = np.argsort(confidence)[:10]
+    print("\nLowest confidence predictions:")
+
+    fig, axes = plt.subplots(2, 5, figsize=(12, 6))
+    fig.suptitle("10 Least Confident MNIST Predictions", fontsize=16)
+    for ax, idx in zip(axes.flatten(), lowest_conf_indices):
+        img = X_test[idx].reshape(28, 28)
+        ax.imshow(img, cmap='gray')
+        ax.set_title(f"True: {y_test[idx]}\nPred: {y_pred[idx]}\nConf: {confidence[idx]:.4f}", fontsize=10)
+        ax.axis('off')
+        print(f"Index: {idx}, True label: {y_test[idx]}, Predicted: {y_pred[idx]}, Confidence: {confidence[idx]:.4f}")
+
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.show()
