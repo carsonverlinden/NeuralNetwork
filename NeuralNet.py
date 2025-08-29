@@ -272,5 +272,7 @@ if __name__ == "__main__":
         ax.axis('off')
         print(f"Index: {idx}, True label: {y_test[idx]}, Predicted: {y_pred[idx]}, Confidence: {confidence[idx]:.4f}")
 
-    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    # Layout gaps for visibility
+    plt.tight_layout(rect=[0, 0.08, 1, 0.95])
+    plt.subplots_adjust(hspace=0.4)
     plt.show()
